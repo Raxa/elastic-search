@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> simple db searching </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+        <script>
+            function search() {
+                var data = $('#serch-value').val();
+                $.ajax({
+                    datatype: 'JSON',
+                    type: 'POST',
+                    url: 'http://localhost:8888',
+                    data: JSON.stringify(data),
+                    success: function(result) {
+                        $('#serch-results').text('');
+                        if (result.length === 0) $('#serch-results').text("Nothing found");
+                        else for (var i=0;i<result.length;i++) {
+                            $('#serch-results').append(result[i].given_name + " " + result[i].date_created);
+                            $('#serch-results').append('<br/>');
+                        }
+                    }
+                });
+            }
+        </script>
+        Search for values in table "person_name" by "given_name"
+        <br/>
+        <input type="text" id="serch-value">
+        <input type="button" onclick="search();" value="Search">
+        <div id="serch-results">
+            &nbsp;
+        </div>
+    </body>
+</html>
