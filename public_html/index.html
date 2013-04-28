@@ -5,9 +5,73 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
     </head>
-    <body>
+    <body onload="checkAuth()">
         <script>
+            function checkAuth() {
+                if (getCookie('authorized') === 'true') {
+                    $('#auth').css("display","none");
+                    $('#session_info').css("display","block");
+                }
+                else {
+                    $('#auth').css("display","block");
+                    $('#session_info').css("display","none");
+                }
+            }
+            function createCookie(name, value, ms) {
+                var expires;
+                if (ms) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + ms);
+                    expires = "; expires=" + date.toGMTString();
+                }
+                else expires = "";
+                document.cookie = name + "=" + value + expires + "; path=/";
+            }
+            
+            function getCookie(c_name) {
+                if (document.cookie.length > 0) {
+                    c_start = document.cookie.indexOf(c_name + "=");
+                        if (c_start != -1) {
+                            c_start = c_start + c_name.length + 1;
+                            c_end = document.cookie.indexOf(";", c_start);
+                            if (c_end == -1) {
+                                c_end = document.cookie.length;
+                            }
+                            return unescape(document.cookie.substring(c_start, c_end));
+                        }
+                }
+                return "";
+            }
+            
+            function auth() {
+                // checking login data
+                var user = $('#login').val();
+                var pass = $('#pass').val();
+                var isAuthorised;
+                var obj = {
+                    Authorization: "Basic " + window.btoa(user + ":" + pass)
+                };
+                $.ajax( {
+                    type: "GET",
+                    dataType: 'jsonp',
+                    url: 'http://localhost:8080/openmrs/ws/rest/v1/session',
+                    data: obj,
+                    jsonp: 'callback',
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('Authorization', "Basic " + window.btoa(user + ":" + pass));
+                    },
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
+                // only for testing
+                isAuthorised = true;
+                if (isAuthorised) createCookie('authorized','true',600*1000);
+                checkAuth();
+            }
+
             function search() {
+                if (getCookie('authorized') === 'false') $('#serch-results').text("Please login");
                 var data = $('#serch-value').val();
                 $.ajax({
                     datatype: 'JSON',
@@ -16,11 +80,16 @@
                     data: JSON.stringify(data),
                     success: function(result) {
                         $('#serch-results').text('');
-                        if (result.length === 0) $('#serch-results').text("Nothing found");
-                        else for (var i=0;i<result.length;i++) {
-                            $('#serch-results').append(result[i].given_name + " " + result[i].date_created);
+                        var rslt = JSON.parse(result);
+                        if (rslt.hits.total === 0) $('#serch-results').text("Nothing found");
+                        else for (var i=0;i<rslt.hits.total;i++) {
+                            $('#serch-results').append(rslt.hits.hits[i]._source.given_name);
+                            $('#serch-results').append(" ");
+                            $('#serch-results').append(rslt.hits.hits[i]._source.family_name);
                             $('#serch-results').append('<br/>');
                         }
+                        //console.log(rslt.hits.total)
+                        $('#serch-results').append(rslt);
                     }
                 });
             }
@@ -31,6 +100,14 @@
         <input type="button" onclick="search();" value="Search">
         <div id="serch-results">
             &nbsp;
+        </div>
+        <div id="auth" style="right: 50px;position: absolute;top: 10px;">
+            User <br/><input type="text" id="login"><br/>
+            Pass <br/><input type="text" id="pass"><br/>
+            <input type="button" onclick="auth()" value="Login">
+        </div>
+        <div id="session_info" style="top: 10px;right: 50px; float: right;position: absolute;display: none">
+            You are loggined
         </div>
     </body>
 </html>

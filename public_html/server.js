@@ -10,6 +10,22 @@ var connection = mysql.createConnection({
    database: "openmrs"
 });
 
+// create searchserver object
+var ElasticSearchClient = require('/usr/local/lib/node_modules/elasticsearchclient');
+searchserver = new ElasticSearchClient({
+    host:'localhost',
+    port:'9200'
+});
+
+// indexing database
+var query = "select given_name,family_name from person_name";
+connection.query(query, function (error, rows, fields) {
+     for (var i=0;i<rows.length;i++)
+     searchserver.index('openmrs_test','document',rows[i]).on('data',function(data) {
+         console.log("Indexing...., data: " + data);
+     }).exec();
+});
+
 http.createServer(function (request, response) {
     if (request.method === "POST") {
        // data buffer
@@ -20,14 +36,18 @@ http.createServer(function (request, response) {
        });
        // all data loaded
        request.on('end', function () {
-          // parsing JSON
-          var values = JSON.parse(data);
-          var query = "select given_name,date_created from person_name";
-          if (values !== "") query += " where given_name = '" + values + "'";
-          // send response
-          connection.query(query, function (error, rows, fields) {
+          // making simple query
+          var que = {
+              "query": {
+                  "query_string": {
+                      "query":data
+                  }
+              }
+          };
+          // search for data, and preparing response
+          searchserver.search('openmrs_test', 'document',que , function(err, data){
               response.writeHead(200, {'Content-Type': 'x-application/json'});
-              if (!error) response.end(JSON.stringify(rows));
+              if (!err) response.end(JSON.stringify(data));
           });
        });
     }
