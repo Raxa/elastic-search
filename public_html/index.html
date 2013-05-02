@@ -44,54 +44,53 @@
             }
             
             function auth() {
-                // checking login data
-                var user = $('#login').val();
-                var pass = $('#pass').val();
-                var isAuthorised;
-                var obj = {
-                    Authorization: "Basic " + window.btoa(user + ":" + pass)
-                };
-                $.ajax( {
-                    type: "GET",
-                    dataType: 'jsonp',
-                    url: 'http://localhost:8080/openmrs/ws/rest/v1/session',
-                    data: obj,
-                    jsonp: 'callback',
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader('Authorization', "Basic " + window.btoa(user + ":" + pass));
-                    },
-                    success: function(result) {
-                        console.log(result);
-                    }
-                });
-                // only for testing
-                isAuthorised = true;
-                if (isAuthorised) createCookie('authorized','true',600*1000);
-                checkAuth();
+                var username = $('#login').val();
+                var password = $('#pass').val();
+                var method = 'GET';
+                var url = 'http://localhost:8080/openmrs/ws/rest/v1/session';
+                var req = new XMLHttpRequest();
+                if('withCredentials' in req) {
+                        req.open(method, url, true);
+                        req.setRequestHeader("Authorization", "Basic " + window.btoa(username + ":" + password));
+                        req.onreadystatechange = function() {
+                            if ((req.readyState === 4) && (req.status >= 200) && (req.status < 400)) {
+                                var data = JSON.parse(req.responseText);
+                                if (data.authenticated) {
+                                    createCookie('jsessionid',data.sessionid,600*1000);
+                                    createCookie('authorized',true,600*1000);
+                                    checkAuth();
+                                }
+                            }
+                        };
+                        req.send();
+                }
             }
 
             function search() {
-                if (getCookie('authorized') === 'false') $('#serch-results').text("Please login");
-                var data = $('#serch-value').val();
-                $.ajax({
-                    datatype: 'JSON',
-                    type: 'POST',
-                    url: 'http://localhost:8888',
-                    data: JSON.stringify(data),
-                    success: function(result) {
-                        $('#serch-results').text('');
-                        var rslt = JSON.parse(result);
-                        if (rslt.hits.total === 0) $('#serch-results').text("Nothing found");
-                        else for (var i=0;i<rslt.hits.total;i++) {
-                            $('#serch-results').append(rslt.hits.hits[i]._source.given_name);
-                            $('#serch-results').append(" ");
-                            $('#serch-results').append(rslt.hits.hits[i]._source.family_name);
-                            $('#serch-results').append('<br/>');
+                if (getCookie('authorized') === 'true' ) {
+                    var data = $('#serch-value').val();
+                    $.ajax({
+                        datatype: 'JSON',
+                        type: 'POST',
+                        url: 'http://localhost:8888',
+                        data: JSON.stringify(data),
+                        success: function(result) {
+                            $('#serch-results').text('');
+                            var rslt = JSON.parse(result);
+                            if (rslt.hits.total === 0) $('#serch-results').text("Nothing found");
+                            else for (var i=0;i<rslt.hits.total;i++) {
+                                if (rslt.hits.hits[i]) {
+                                    $('#serch-results').append(rslt.hits.hits[i]._source.given_name);
+                                    $('#serch-results').append(" ");
+                                    $('#serch-results').append(rslt.hits.hits[i]._source.family_name);
+                                    $('#serch-results').append('<br/>');
+                                }
+                            }
+                            $('#serch-results').append(rslt);
                         }
-                        //console.log(rslt.hits.total)
-                        $('#serch-results').append(rslt);
-                    }
-                });
+                    });
+                }   
+                else $('#serch-results').text("Please, sign in");
             }
         </script>
         Search for values in table "person_name" by "given_name"
@@ -103,11 +102,11 @@
         </div>
         <div id="auth" style="right: 50px;position: absolute;top: 10px;">
             User <br/><input type="text" id="login"><br/>
-            Pass <br/><input type="text" id="pass"><br/>
+            Pass <br/><input type="password" id="pass"><br/>
             <input type="button" onclick="auth()" value="Login">
         </div>
         <div id="session_info" style="top: 10px;right: 50px; float: right;position: absolute;display: none">
-            You are loggined
+            You are authorized
         </div>
     </body>
 </html>

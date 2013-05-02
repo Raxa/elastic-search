@@ -18,13 +18,13 @@ searchserver = new ElasticSearchClient({
 });
 
 // indexing database
-var query = "select given_name,family_name from person_name";
+/*var query = "select given_name,family_name from person_name";
 connection.query(query, function (error, rows, fields) {
      for (var i=0;i<rows.length;i++)
      searchserver.index('openmrs_test','document',rows[i]).on('data',function(data) {
          console.log("Indexing...., data: " + data);
      }).exec();
-});
+});*/
 
 http.createServer(function (request, response) {
     if (request.method === "POST") {
