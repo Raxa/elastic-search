@@ -5,8 +5,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
     </head>
-    <body onload="checkAuth()">
+    <body>
         <script>
+            // body.onload
             function checkAuth() {
                 if (getCookie('authorized') === 'true') {
                     $('#auth').css("display","none");
@@ -67,13 +68,15 @@
             }
 
             function search() {
-                if (getCookie('authorized') === 'true' ) {
                     var data = $('#serch-value').val();
+                    var json = {};
+                    json.type = "plain";
+                    json.data = data;
                     $.ajax({
                         datatype: 'JSON',
                         type: 'POST',
-                        url: 'http://localhost:8888',
-                        data: JSON.stringify(data),
+                        url: 'http://localhost:1024',
+                        data: JSON.stringify(json),
                         success: function(result) {
                             $('#serch-results').text('');
                             var rslt = JSON.parse(result);
@@ -89,8 +92,6 @@
                             $('#serch-results').append(rslt);
                         }
                     });
-                }   
-                else $('#serch-results').text("Please, sign in");
             }
         </script>
         Search for values in table "person_name" by "given_name"
@@ -99,14 +100,6 @@
         <input type="button" onclick="search();" value="Search">
         <div id="serch-results">
             &nbsp;
-        </div>
-        <div id="auth" style="right: 50px;position: absolute;top: 10px;">
-            User <br/><input type="text" id="login"><br/>
-            Pass <br/><input type="password" id="pass"><br/>
-            <input type="button" onclick="auth()" value="Login">
-        </div>
-        <div id="session_info" style="top: 10px;right: 50px; float: right;position: absolute;display: none">
-            You are authorized
         </div>
     </body>
 </html>

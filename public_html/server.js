@@ -1,30 +1,67 @@
 // include modules
-var http = require('http'),mysql = require("/usr/local/lib/node_modules/mysql");
+var http = require('http');
+var path = require('path');
 var fs = require('fs');
-var index = fs.readFileSync('./index.html');
-path = require('path');
-// mysql connection
-var connection = mysql.createConnection({
-   user: "root",
-   password: "ermolenko",
-   database: "openmrs"
-});
 
-// create searchserver object
-var ElasticSearchClient = require('/usr/local/lib/node_modules/elasticsearchclient');
-searchserver = new ElasticSearchClient({
-    host:'localhost',
-    port:'9200'
-});
+// class for search layer
+function ElasticSearch() {
+    
+    /*
+     * Private attributes/methods
+     */
+    
+    // mysql module
+    var mysql = require("/usr/local/lib/node_modules/mysql");
+    // open MySQL connection
+    var connection = mysql.createConnection({
+        user: "root",
+        password: "ermolenko",
+        database: "openmrs"
+    });
+    // create searchserver object
+    var ElasticSearchClient = require('/usr/local/lib/node_modules/elasticsearchclient');
+    var searchserver = new ElasticSearchClient({
+        host:'localhost',
+        port:'9200'
+    });
+    
+    /*
+     * Public attributes/methods
+     */
+    
+    // name for indexing
+    this.indexname = 'openmrs_test';
+    // type of index
+    this.indextype = 'document';
+    // index selected fields
+    this.index = function(callback) {
+        var query = "select given_name,family_name from person_name";
+        connection.query(query, function (error, rows, fields) {
+            for (var i=0;i<rows.length;i++)
+            searchserver.index('openmrs_test','document',rows[i]).on('data',function(data) {
+                // checking if required
+            }).exec();
+        });
+    };
+    // search 
+    this.search = function(type,data,callback) {
+        if (type === "plain") {
+            var que = {
+                "query": {
+                    "query_string": {
+                        "query":data
+                     }
+                }
+            };
+            searchserver.search(this.indexname, this.indextype, que, function(err, data) {
+                if ((!err) && (callback)) callback(data);
+            });
+        }
+    };
+}
 
- //indexing database
-var query = "select given_name,family_name from person_name";
-connection.query(query, function (error, rows, fields) {
-     for (var i=0;i<rows.length;i++)
-     searchserver.index('openmrs_test','document',rows[i]).on('data',function(data) {
-         console.log("Indexing...., data: " + data);
-     }).exec();
-});
+var es = new ElasticSearch();
+es.index();
 
 http.createServer(function (request, response) {
     if (request.method === "POST") {
@@ -36,19 +73,12 @@ http.createServer(function (request, response) {
        });
        // all data loaded
        request.on('end', function () {
-          // making simple query
-          var que = {
-              "query": {
-                  "query_string": {
-                      "query":data
-                  }
-              }
-          };
-          // search for data, and preparing response
-          searchserver.search('openmrs_test', 'document',que , function(err, data){
-              response.writeHead(200, {'Content-Type': 'x-application/json'});
-              if (!err) response.end(JSON.stringify(data));
-          });
+           // parsing data
+           var object = JSON.parse(data);
+           es.search(object.type,object.data,function(result) {
+               response.writeHead(200, {'Content-Type': 'x-application/json'});
+               response.end(JSON.stringify(result));
+           });
        });
     }
     
@@ -84,6 +114,7 @@ http.createServer(function (request, response) {
             }
         });
     }
-}).listen(8888);
+    
+}).listen(1024);
 
 
