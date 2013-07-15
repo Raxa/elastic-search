@@ -8,7 +8,7 @@ Installing required software:
 
 *Installing ES:*
 
-curl https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.2.deb
+wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.2.deb
 
 sudo dpkg -i elasticsearch-0.90.2.deb
 
