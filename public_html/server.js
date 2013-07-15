@@ -773,7 +773,7 @@ function ElasticSearch() {
                 };
                 if ((res.result === searchResult.ok) && (res.data.length > 0)){
                     async.each(res.id,function(id,callback){
-                        var index = res.id.indexOf(item);
+                        var index = res.id.indexOf(id);
                         getDataByField(objectType.patient,'id',id,function(patient){
                             if (patient) {
                                 // if there is double-indexed values
