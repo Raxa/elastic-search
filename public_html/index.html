@@ -7,95 +7,56 @@
     </head>
     <body>
         <script>
-            // body.onload
-            function checkAuth() {
-                if (getCookie('authorized') === 'true') {
-                    $('#auth').css("display","none");
-                    $('#session_info').css("display","block");
-                }
-                else {
-                    $('#auth').css("display","block");
-                    $('#session_info').css("display","none");
-                }
-            }
-            function createCookie(name, value, ms) {
-                var expires;
-                if (ms) {
-                    var date = new Date();
-                    date.setTime(date.getTime() + ms);
-                    expires = "; expires=" + date.toGMTString();
-                }
-                else expires = "";
-                document.cookie = name + "=" + value + expires + "; path=/";
-            }
-            
-            function getCookie(c_name) {
-                if (document.cookie.length > 0) {
-                    c_start = document.cookie.indexOf(c_name + "=");
-                        if (c_start != -1) {
-                            c_start = c_start + c_name.length + 1;
-                            c_end = document.cookie.indexOf(";", c_start);
-                            if (c_end == -1) {
-                                c_end = document.cookie.length;
-                            }
-                            return unescape(document.cookie.substring(c_start, c_end));
-                        }
-                }
-                return "";
-            }
-            
-            function auth() {
-                var username = $('#login').val();
-                var password = $('#pass').val();
-                var method = 'GET';
-                var url = 'http://localhost:8080/openmrs/ws/rest/v1/session';
-                var req = new XMLHttpRequest();
-                if('withCredentials' in req) {
-                        req.open(method, url, true);
-                        req.setRequestHeader("Authorization", "Basic " + window.btoa(username + ":" + password));
-                        req.onreadystatechange = function() {
-                            if ((req.readyState === 4) && (req.status >= 200) && (req.status < 400)) {
-                                var data = JSON.parse(req.responseText);
-                                if (data.authenticated) {
-                                    createCookie('jsessionid',data.sessionid,600*1000);
-                                    createCookie('authorized',true,600*1000);
-                                    checkAuth();
-                                }
-                            }
-                        };
-                        req.send();
-                }
-            }
-
+            var url = 'http://localhost';
+            var port = ':1024';
             function search() {
                     var data = $('#serch-value').val();
-                    var json = {};
-                    json.type = "plain";
-                    json.data = data;
-                    $.ajax({
-                        datatype: 'JSON',
-                        type: 'POST',
-                        url: 'http://localhost:1024',
-                        data: JSON.stringify(json),
-                        success: function(result) {
-                            $('#serch-results').text('');
-                            var rslt = JSON.parse(result);
-                            if (rslt.hits.total === 0) $('#serch-results').text("Nothing found");
-                            else for (var i=0;i<rslt.hits.total;i++) {
-                                if (rslt.hits.hits[i]) {
-                                    $('#serch-results').append(rslt.hits.hits[i]._source.given_name);
-                                    $('#serch-results').append(" ");
-                                    $('#serch-results').append(rslt.hits.hits[i]._source.family_name);
-                                    $('#serch-results').append('<br/>');
+                        var json = {};
+                        json.type = $('#search-type').val();
+                        json.item = $('#search-item').val();
+                        json.data = data;
+                        var startTime = new Date();
+                        $.ajax({
+                            datatype: 'JSON',
+                            type: 'POST',
+                            url: url + port,
+                            data: JSON.stringify(json),
+                            success: function(result) {
+                                $('#serch-results').text('');
+                                var rslt = result;
+                                if (rslt.result === 'error') {
+                                    $('#serch-results').append("<h3>Error</h3>");
+                                    $('#serch-results').append(rslt.data);
+                                }
+                                else {
+                                    $('#serch-results').append('<h3> Take: ' + (new Date() - startTime) + 
+                                            'ms, results: ' + rslt.data.length + '.</h3>');
+                                    result.data.forEach(function(item) {
+                                        $('#serch-results').append(JSON.stringify(item));
+                                        $('#serch-results').append('<br/><br/>');
+                                    });
                                 }
                             }
-                            $('#serch-results').append(rslt);
-                        }
-                    });
+                        });
             }
         </script>
-        Search for values in table "person_name" by "given_name"
-        <br/>
+        Select search type:
+        <select id="search-type">
+            <option>single</option>
+            <!--<option>plain</option>-->
+        </select>
+        Select entities for search:
+        <select id="search-item">
+            <option>person</option>
+            <option>patient</option>
+            <option>provider</option>
+            <option>drug</option>
+            <option>location</option>
+            <option>encounter</option>
+            <option>order</option>
+            <option>obs</option>
+            <option>concept</option>
+        </select>
         <input type="text" id="serch-value">
         <input type="button" onclick="search();" value="Search">
         <div id="serch-results">
