@@ -17,14 +17,14 @@ var module = new Module();
 var es = new ES(module);
 // add required entities
 es.addEntity(new Person(module));
-es.addEntity(new Concept(module));
 es.addEntity(new Encounter(module));
 es.addEntity(new Patient(module));
 es.addEntity(new Obs(module));
 es.addEntity(new Order(module));
-es.addEntity(new Drug(module));
 es.addEntity(new Location(module));
 es.addEntity(new Provider(module));
+es.addEntity(new Drug(module));
+es.addEntity(new Concept(module));
 
 var args = process.argv.splice(2);
 
@@ -33,7 +33,7 @@ if (args[0] === 'index') {
     var time = new Date();
     es.index(function(){
         console.log('indexing done :' + (new Date() - time));
-        process.exit(0);
+        process.exit();
     });
 }
 
@@ -70,17 +70,21 @@ else if (args[0] === 'run') {
                 // test if this type is registered
                 es.isRegisteredType(tokens[0],function(result) {
                     // type is registered
-                    if (result === true) {
-                        // if both type and data selected
-                        if (tokens.length === 2) 
-                            try {
-                                es.search(searchType.single,tokens[0],tokens[1],function(result) {
-                                    response.end(JSON.stringify(result));
-                                });
-                            }
-                            catch (e) {
-                                response.end('error');
-                            }
+                    if (result === true)  {
+                        if (tokens.length === 2)
+                            es.search(searchType.single,tokens[0],tokens[1],function(result) {
+                                response.end(JSON.stringify(result));
+                            });
+                        if (tokens.length === 1)
+                            es.search(searchType.single,tokens[0],'',function(result) {
+                                response.end(JSON.stringify(result));
+                            });
+                    }
+                    else {
+                        response.end(JSON.stringify({
+                            result : searchResult.error,
+                            data : errorType.incorr_data
+                        }));
                     }
                 });
             }
@@ -90,7 +94,7 @@ else if (args[0] === 'run') {
 }
 
 // clean index (need test)
-else if (args[0] === 'default') {
+else if (args[0] === 'clean') {
     config.set('indexpatient',false);
     config.set('indexperson',false);
     config.set('indexprovider',false);
