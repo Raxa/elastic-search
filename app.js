@@ -147,6 +147,7 @@ switch(args[0]) {
         break;
     // index all data
     case 'index':
+        var async = require('async');
         // items for indexing
         var index = [
             'person',

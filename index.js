@@ -58,6 +58,7 @@ switch (args[0]) {
             console.log('obs indexed');
             process.exit();
         });
+        break;
     case 'order' : 
         var order = new Order(module);
         order.index(function(){
@@ -71,6 +72,7 @@ switch (args[0]) {
             console.log('drug indexed');
             process.exit();
         });
+        break;
     case 'concept':
         var concept = new Concept(module);
         concept.index(function(){
