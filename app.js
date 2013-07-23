@@ -1,115 +1,194 @@
-// imports
-var Module = require('./lib/module').Module;
-var ES = require('./lib/searchserver').SearchServer;
-// import entities
-var Person = require('./lib/person').Person;
-var Patient = require('./lib/patient').Patient;
-var Encounter = require('./lib/encounter').Encounter;
-var Provider = require('./lib/provider').Provider;
-var Location = require('./lib/location').Location;
-var Concept = require('./lib/concept').Concept;
-var Drug = require('./lib/drug').Drug;
-var Obs = require('./lib/obs').Obs;
-var Order = require('./lib/order').Order;
+// import and configure express
+var express = require('express');
+var request = require('request');
+var exec = require('child_process').exec;
+var app = express();
+app.configure(function() {
+    app.use(express.bodyParser()); 
+});
 
-// create ES server
-var module = new Module();
-var es = new ES(module);
-// add required entities
-es.addEntity(new Person(module));
-es.addEntity(new Encounter(module));
-es.addEntity(new Patient(module));
-es.addEntity(new Obs(module));
-es.addEntity(new Order(module));
-es.addEntity(new Location(module));
-es.addEntity(new Provider(module));
-es.addEntity(new Drug(module));
-es.addEntity(new Concept(module));
-
+// parse command line args
 var args = process.argv.splice(2);
-
-// index selected items
-if (args[0] === 'index') {
-    var time = new Date();
-    es.index(function(){
-        console.log('indexing done :' + (new Date() - time));
-        process.exit();
-    });
-}
-
-// run search server
-else if (args[0] === 'run') {
-    http.createServer(function(request, response) {
-        if (request.method === "POST") {
-            // data buffer
-            var data = '';
-            // getting data chunks
-            request.on('data', function(chunk) {
-                data += chunk;
+switch(args[0]) {
+    // run search server
+    case 'run':
+        //import and configure ES search server
+        var Module = require('./lib/module').Module;
+        // import entities
+        var Person = require('./lib/person').Person;
+        var Patient = require('./lib/patient').Patient;
+        var Encounter = require('./lib/encounter').Encounter;
+        var Provider = require('./lib/provider').Provider;
+        var Location = require('./lib/location').Location;
+        var Concept = require('./lib/concept').Concept;
+        var Drug = require('./lib/drug').Drug;
+        var Obs = require('./lib/obs').Obs;
+        var Order = require('./lib/order').Order;
+        // create instances
+        var module = new Module();
+        // create instances
+        var person = new Person(module);
+        var patient = new Patient(module);
+        var provider = new Provider(module);
+        var location = new Location(module);
+        var encounter = new Encounter(module);
+        var obs = new Obs(module);
+        var order = new Order(module);
+        var drug = new Drug(module);
+        var concept = new Concept(module);
+        // configure GET requests
+        //default
+        app.get('/',function(request,response){
+            response.json({
+                message : 'Testing elasticsearch server for RAXA medical data'
             });
-            // all data loaded
-            request.on('end', function() {
-                // parsing data
-                var object = JSON.parse(data);
-                response.writeHead(200, {'Content-Type': 'x-application/json'});
-                // if searc server is started
-                es.search(object.type, object.item, object.data, function(result) {
-                    response.end(JSON.stringify(result));
-                });
+        });
+        // patient
+        app.get('/patient',function(request,response) {
+            patient.search('',function(result){
+                response.json(result);
             });
-        } 
-        if (request.method === "GET") {
-            // selected contecn type is text (just for testing)
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            // parse URL
-            var parts = url.parse(request.url,true);
-            // parse path
-            var tokens = parts.path.substr(1).split(path.sep);
-            //var tokens = parts.path.match(/\w+/g);
-            if ((tokens.length > 0) && (tokens.length < 3)) {
-                // test if this type is registered
-                es.isRegisteredType(tokens[0],function(result) {
-                    // type is registered
-                    if (result === true)  {
-                        if (tokens.length === 2)
-                            es.search(searchType.single,tokens[0],tokens[1],function(result) {
-                                response.end(JSON.stringify(result));
-                            });
-                        if (tokens.length === 1)
-                            es.search(searchType.single,tokens[0],'',function(result) {
-                                response.end(JSON.stringify(result));
-                            });
-                    }
-                    else {
-                        response.end(JSON.stringify({
-                            result : searchResult.error,
-                            data : errorType.incorr_data
-                        }));
-                    }
-                });
-            }
-            else response.end('error');
-        }
-    }).listen(1024);
-}
-
-// clean index (need test)
-else if (args[0] === 'clean') {
-    config.set('indexpatient',false);
-    config.set('indexperson',false);
-    config.set('indexprovider',false);
-    config.set('indexdrug',false);
-    config.set('indexlocation',false);
-    config.set('indexconcept',false);
-    config.set('indexencounter',false);
-    config.set('indexorder',false);
-    config.set('indexobs',false);
-    es.clean(function(){
+        });
+        app.get('/patient/:data',function(request,response) {
+            patient.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // person
+        app.get('/person',function(request,response) {
+            person.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/person/:data',function(request,response) {
+            person.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // provider
+        app.get('/provider',function(request,response) {
+            provider.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/provider/:data',function(request,response) {
+            provider.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // location
+        app.get('/location',function(request,response) {
+            location.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/location/:data',function(request,response) {
+            location.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // encounter
+        app.get('/encounter',function(request,response) {
+            encounter.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/encounter/:data',function(request,response) {
+            encounter.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // obs
+        app.get('/obs',function(request,response) {
+            obs.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/obs/:data',function(request,response) {
+            obs.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // order
+        app.get('/order',function(request,response) {
+            order.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/order/:data',function(request,response) {
+            order.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // drug
+        app.get('/drug',function(request,response) {
+            drug.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/drug/:data',function(request,response) {
+            drug.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // concept
+        app.get('/concept',function(request,response) {
+            concept.search('',function(result){
+                response.json(result);
+            });
+        });
+        app.get('/concept/:data',function(request,response) {
+            concept.search(request.params.data,function(result){
+                response.json(result);
+            });
+        });
+        // run app on port 1024
+        app.listen(1024);
+        break;
+    // index all data
+    case 'index':
+        // items for indexing
+        var index = [
+            'person',
+            'provider',
+            'patient',
+            'obs',
+            'encounter',
+            'order',
+            'drug',
+            'location',
+            'concept',
+            'concept_name',
+            'concept_set',
+            'concept_description'
+        ];
+        // index each entity in child process
+        async.eachSeries(index,function(item,callback){
+            exec('node index.js ' + item,function(err,sout,serr){
+                console.log('indexing ' + item + ' done');
+                callback();
+            });
+        },function(err){
+            process.exit();
+        });
+        break;
+    // clean index
+    case 'clean':
+        // delete index
+        request({
+            uri: 'http://localhost:9200/openmrs_test',
+            method : 'DELETE'
+        });
         console.log('index cleaned');
-    });
+        break;
+    default:
+        console.log('invalid params');
+        break;
 }
 
-else console.log('invalid params');
+
+
+
 
 
 

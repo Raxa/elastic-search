@@ -1,0 +1,8 @@
+{
+    "dbHost": "localhost",
+    "dbUser" : "root",
+    "dbPass" : "ermolenko",
+    "dbName" : "openmrs",
+    "esHost" : "localhost",
+    "esPort" : "9200"
+}
