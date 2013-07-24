@@ -26,6 +26,14 @@ Currently you can install it using script:
 cd elastic-search
 ./install.sh
 ```
+Configuring
+-----------
+Before running, you must set up mysql and es params
+for this, edit ```default.json``` file
+```
+cd config
+nano default.json
+```
 Running
 -------
 Currently production scripts are *not* implemented, to run search server you must:
