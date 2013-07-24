@@ -6,24 +6,24 @@ var app = express();
 app.configure(function() {
     app.use(express.bodyParser()); 
 });
+//import and configure ES search server
+var Module = require('./lib/module').Module;
+// import entities
+var Person = require('./lib/person').Person;
+var Patient = require('./lib/patient').Patient;
+var Encounter = require('./lib/encounter').Encounter;
+var Provider = require('./lib/provider').Provider;
+var Location = require('./lib/location').Location;
+var Concept = require('./lib/concept').Concept;
+var Drug = require('./lib/drug').Drug;
+var Obs = require('./lib/obs').Obs;
+var Order = require('./lib/order').Order;
 
 // parse command line args
 var args = process.argv.splice(2);
 switch(args[0]) {
     // run search server
     case 'run':
-        //import and configure ES search server
-        var Module = require('./lib/module').Module;
-        // import entities
-        var Person = require('./lib/person').Person;
-        var Patient = require('./lib/patient').Patient;
-        var Encounter = require('./lib/encounter').Encounter;
-        var Provider = require('./lib/provider').Provider;
-        var Location = require('./lib/location').Location;
-        var Concept = require('./lib/concept').Concept;
-        var Drug = require('./lib/drug').Drug;
-        var Obs = require('./lib/obs').Obs;
-        var Order = require('./lib/order').Order;
         // create instances
         var module = new Module();
         // create instances
