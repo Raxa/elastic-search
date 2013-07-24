@@ -45,7 +45,9 @@ switch(args[0]) {
         });
         // patient
         app.get('/patient',function(request,response) {
-            patient.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            patient.search(query,function(result){
                 response.json(result);
             });
         });
@@ -56,7 +58,9 @@ switch(args[0]) {
         });
         // person
         app.get('/person',function(request,response) {
-            person.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            person.search(query,function(result){
                 response.json(result);
             });
         });
@@ -67,7 +71,9 @@ switch(args[0]) {
         });
         // provider
         app.get('/provider',function(request,response) {
-            provider.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            provider.search(query,function(result){
                 response.json(result);
             });
         });
@@ -78,7 +84,9 @@ switch(args[0]) {
         });
         // location
         app.get('/location',function(request,response) {
-            location.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            location.search(query,function(result){
                 response.json(result);
             });
         });
@@ -89,7 +97,9 @@ switch(args[0]) {
         });
         // encounter
         app.get('/encounter',function(request,response) {
-            encounter.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            encounter.search(query,function(result){
                 response.json(result);
             });
         });
@@ -100,7 +110,9 @@ switch(args[0]) {
         });
         // obs
         app.get('/obs',function(request,response) {
-            obs.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            obs.search(query,function(result){
                 response.json(result);
             });
         });
@@ -111,7 +123,9 @@ switch(args[0]) {
         });
         // order
         app.get('/order',function(request,response) {
-            order.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            order.search(query,function(result){
                 response.json(result);
             });
         });
@@ -122,7 +136,9 @@ switch(args[0]) {
         });
         // drug
         app.get('/drug',function(request,response) {
-            drug.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            drug.search(query,function(result){
                 response.json(result);
             });
         });
@@ -133,7 +149,9 @@ switch(args[0]) {
         });
         // concept
         app.get('/concept',function(request,response) {
-            concept.search('',function(result){
+            var query = '';
+            if (request.query.q) query = request.query.q;
+            concept.search(query,function(result){
                 response.json(result);
             });
         });
