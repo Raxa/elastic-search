@@ -24,7 +24,7 @@ git clone https://github.com/invercity/elastic-search.git
 Currently you can install it using script:
 ```
 cd elastic-search
-./install.sh
+npm install
 ```
 Configuring
 -----------
@@ -47,5 +47,5 @@ node index.js _instance_name
 ```
 Then you can run search server:
 ```
-node app.js run
+npm start
 ```
