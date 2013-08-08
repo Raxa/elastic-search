@@ -1,11 +1,9 @@
-// import reqired modules
-var exec = require('child_process').exec;
+// import search app
+var App = require('./lib/application').Application;
 
 // parse command line args
 var args = process.argv.splice(2);
-// import search app
-var App = require('./lib/application').Application;
-// start it
+// create app
 var app = new App();
 switch(args[0]) {
     // run search server
