@@ -10,7 +10,7 @@
     } 
   ],
   "scripts": {
-    "start": "node ./app.js run"
+    "start": "node --expose-gc ./app.js run"
   },
   "repository": {
     "type": "git",
