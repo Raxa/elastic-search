@@ -22,11 +22,16 @@ cd $ES_HOME
 ```
 installing plugin:
 ```
-./bin/plugin --url file://PATH_TO_PLUGIN -install river-jdbc
+./bin/plugin --url file://PATH_TO_PLUGIN/plugin.zip -install river-jdbc
+```
+Also you can install it manually:
+```
+mkdir plugins/river-jdbc
+cp PATH_TO_PLUGIN/plugin.jar plugins/river-jdbc
 ```
 then copy ```JDBC``` connector to plugin directory:
 ```
-cp PATH_TO_JDBC_CONNECTOR/connector.jar $ES_HOME/plugins/river-jdbc/
+cp PATH_TO_JDBC_CONNECTOR/connector.jar plugins/river-jdbc/
 ```
 and restart ES to perform updates:
 ```
