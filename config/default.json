@@ -9,6 +9,7 @@
     "appAuth": true,
     "appMaxResponse" : "1000",
     "appMaxBulkReq" : "1",
-    "appMaxBulkSize" : "100",
-    "appMaxBulkFetchSize" : "10"
+    "appMaxBulkSize" : "10",
+    "appMaxBulkFetchSize" : "10",
+    "appSessionLength" : 10
 }
