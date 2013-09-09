@@ -1,0 +1,30 @@
+{
+  "name": "elastic-search",
+  "version": "0.0.1",
+  "author": "invercity",
+  "description": "node js search server for raxa back end",
+  "contributors": [ 
+    {
+      "name": "Andriy Ermolenko",
+      "email": "invercity1991@gmail.com"
+    } 
+  ],
+  "scripts": {
+    "start": "node --expose-gc ./app.js run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/invercity/elastic-search.git"
+  },
+  "dependencies" : {
+   "mysql" : "*",
+   "elasticsearchclient" : "*",
+   "async" : "*",
+   "express" : "*",
+   "request" : "*"
+  },
+  "analyze": false,
+  "engines": {
+    "node": ">=0.6"
+  }
+}
