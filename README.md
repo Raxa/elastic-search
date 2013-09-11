@@ -1,7 +1,16 @@
 elastic-search
 ==============
 Secure and fast Elastic Search on various Raxa backend resources including patient, person, encounter, obs, etc
-
+Requirements
+-------------
+```
+JDK v6+ (for Elasticsearch server)
+Elasticsearch v0.9+
+MySQL server
+Node.JS v0.8+
+npm v1.3+
+elasticsearch mysql-river plugin & MySQL JDBC connector (for indexing)
+```
 Installing required software (Ubuntu)
 -----------------------------
 ### Installing Elasticsearch server
@@ -33,21 +42,21 @@ then copy ```JDBC``` connector to plugin directory:
 ```
 cp PATH_TO_JDBC_CONNECTOR/connector.jar plugins/river-jdbc/
 ```
-and restart ES to perform updates:
+and restart ```ES``` to perform updates:
 ```
 sudo service elasticsearch restart
 ```
 ### Installing nodejs
-elastic-search require ```nodejs``` version 0.10+
+```elastic-search``` require ```nodejs``` version 0.80+
 ```
 sudo apt-get install nodejs npm
 ```
 ### Installing elastic-search
-You can get elastic-search using ```git```:
+You can get ```elastic-search``` using ```git```:
 ```
 git clone https://github.com/invercity/elastic-search.git
 ```
-### Installing required mudules
+### Installing required modules
 Currently you can install it using:
 ```
 cd elastic-search
@@ -63,14 +72,25 @@ nano default.json
 ```
 Running
 -------
-Currently production scripts are *not* implemented, to run search server you must:
-start rivers (for transmitting data from ```MySQL``` to ```ES```)
-```
-node app.js river
-```
-Then you can run search server:
+To run search server just execute next command:
 ```
 npm start
 ```
+Testing
+-------
+At first, install ```jasmine-node```
+```
+npm install -g jasmine-node
+```
+Then you can run tests:
+```
+npm test
+```
+Indexing
+-------
+When you're done with testing, you can run ```rivers``` for indexing data from MySQL:
+```
+node app.js river
+```
 *** Note, that ```river``` transmitting data taking some time, so at the first time server will *NO* return any data, 
-just wait while index will be created
+just wait while indexes will be created
