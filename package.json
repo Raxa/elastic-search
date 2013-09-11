@@ -22,11 +22,10 @@
    "elasticsearchclient" : "*",
    "async" : "*",
    "express" : "*",
-   "request" : "*",
-   "jasmine-node" : "*"
+   "request" : "*"
   },
   "analyze": false,
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   }
 }
