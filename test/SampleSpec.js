@@ -775,7 +775,7 @@ describe('jasmine-node', function() {
             done();
         });
     },10000); 
-/*
+
     afterEach(function(doe) {
         setTimeout(function() {
             request({
@@ -785,5 +785,5 @@ describe('jasmine-node', function() {
                 doe();
             });
         }, 100);
-    }); */
+    }); 
 });
