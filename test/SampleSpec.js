@@ -379,7 +379,10 @@ describe('jasmine-node', function() {
         }
     }
 
-    // adding data to ES
+    /*
+     * Before tests, add data for testings
+     */
+    
     beforeEach(function(doe) {
         // array for BULK commands
         var commands = [];
@@ -776,6 +779,11 @@ describe('jasmine-node', function() {
         });
     },10000); 
 
+    
+    /*
+     *  After tests, remove test data
+     */
+    
     afterEach(function(doe) {
         setTimeout(function() {
             request({
