@@ -94,3 +94,11 @@ node app.js river
 ```
 *** Note, that ```river``` transmitting data taking some time, so at the first time server will *NO* return any data, 
 just wait while indexes will be created
+To remove data, run
+``` 
+node app.js clean
+```
+Additional info
+---------------
+You can get additional information on wiki:
+https://raxaemr.atlassian.net/wiki/display/RAXAJSS/Search+layer
