@@ -1,8 +1,8 @@
 {
     "appPort": "3000",
-    "dbHost" : "localhost",
-    "dbUser" : "root",
-    "dbPass" : "ermolenko",
+    "dbHost" : "raxaemrtest2.cvgs1e008nbr.ap-southeast-1.rds.amazonaws.com",
+    "dbUser" : "nodeJS",
+    "dbPass" : "2rsJXeGEk3",
     "dbName" : "openmrs",
     "esHost" : "localhost",
     "esPort" : "9200",
