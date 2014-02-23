@@ -14,7 +14,7 @@ describe('jasmine-node', function() {
      *  We will add user0, which have access:
      *  GRANTED : persons, patients, orders, encounters and drugs ; 
      *  RESTRICTED : locations, concepts, obs, providers;
-     *  ACCSESS GROUPS : 1;
+     *  ACCESS GROUPS : 1;
      *  
      */
 
@@ -615,7 +615,7 @@ describe('jasmine-node', function() {
 
     it("Request for person 'andriy' must return one person with name 'Andriy'", function(done) {
         request({
-            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'person/andriy',
+            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'person/andriy'
         }, function(err, res, body) {
             expect((JSON.parse(body)).length).toEqual(1);
             expect((JSON.parse(body))[0].preferredName.givenName).toEqual('Andriy');
@@ -625,7 +625,7 @@ describe('jasmine-node', function() {
 
     it("Request for person 'vasiliy' must return no data", function(done) {
         request({
-            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'person/vasiliy',
+            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'person/vasiliy'
         }, function(err, res, body) {
             expect((JSON.parse(body)).length).toEqual(0);
             done();
@@ -634,7 +634,7 @@ describe('jasmine-node', function() {
 
     it("Request for patient 'andriy' must return one patient", function(done) {
         request({
-            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'patient/andriy',
+            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'patient/andriy'
         }, function(err, res, body) {
             expect(JSON.parse(body).length).toEqual(1);
             done();
@@ -643,7 +643,7 @@ describe('jasmine-node', function() {
 
     it("Request for patient 'vasiliy' must return no data", function(done) {
         request({
-            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'patient/vasiliy',
+            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'patient/vasiliy'
         }, function(err, res, body) {
             expect(JSON.parse(body).length).toEqual(0);
             done();
@@ -652,7 +652,7 @@ describe('jasmine-node', function() {
 
     it("Request for provider 'abc' must return no data", function(done) {
         request({
-            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'provider/abc',
+            uri: 'http://' + login + ':' + pass + '@localhost:' + config.appPort + '/' + 'provider/abc'
         }, function(err, res, body) {
             expect(JSON.parse(body).error).toBeDefined();
             done();
@@ -661,7 +661,7 @@ describe('jasmine-node', function() {
     
     it("Request for provider 'def' must return access error",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'provider/def',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'provider/def'
         },
         function(err,res,body){
             expect(JSON.parse(body).error).toBeDefined();
@@ -671,7 +671,7 @@ describe('jasmine-node', function() {
     
     it("Request for encounter 'andriy' must return one encounter",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter/andriy',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter/andriy'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(1);
@@ -681,7 +681,7 @@ describe('jasmine-node', function() {
     
     it("Request for encounter without option must return one encounter",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(1);
@@ -691,7 +691,7 @@ describe('jasmine-node', function() {
     
     it("Request for encounter 'vitaliy' must return no data",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter/vitaliy',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'encounter/vitaliy'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(0);
@@ -701,7 +701,7 @@ describe('jasmine-node', function() {
     
     it("Request for order 'andriy' must return one order",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order/andriy',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order/andriy'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(1);
@@ -711,7 +711,7 @@ describe('jasmine-node', function() {
     
     it("Request for order without options must return two orders",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(2);
@@ -721,7 +721,7 @@ describe('jasmine-node', function() {
     
     it("Request for order 'lidia' must return no data",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order/lidia',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'order/lidia'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(0);
@@ -731,7 +731,7 @@ describe('jasmine-node', function() {
     
     it("Request for location 'ukraine' must return access error",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'location/ukraine',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'location/ukraine'
         },
         function(err,res,body){
             expect(JSON.parse(body).error).toBeDefined();
@@ -741,7 +741,7 @@ describe('jasmine-node', function() {
     
     it("Request for drug without options must return two drugs",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'drug/',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'drug/'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(2);
@@ -751,7 +751,7 @@ describe('jasmine-node', function() {
     
     it("Request for drug 'oxygen' must return one drug",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'drug/oxygen',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'drug/oxygen'
         },
         function(err,res,body){
             expect(JSON.parse(body).length).toEqual(1);
@@ -761,7 +761,7 @@ describe('jasmine-node', function() {
     
     it("Request for obs 'andriy' must return access error",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'obs/andriy',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'obs/andriy'
         },
         function(err,res,body){
             expect(JSON.parse(body).error).toBeDefined();
@@ -771,7 +771,7 @@ describe('jasmine-node', function() {
     
     it("Request for concept without options must return access error",function(done) {
         request({
-            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'concept',
+            uri: 'http://' + login  + ':' + pass + '@localhost:' + config.appPort + '/' + 'concept'
         },
         function(err,res,body){
             expect(JSON.parse(body).error).toBeDefined();
