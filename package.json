@@ -10,7 +10,8 @@
     } 
   ],
   "scripts": {
-    "start": "node --expose-gc ./app.js run"
+    "start": "node --expose-gc ./app.js run",
+    "test" : "jasmine-node --verbose test/SampleSpec.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,6 @@
   },
   "analyze": false,
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   }
 }
